@@ -37,7 +37,7 @@ class Snapshotter:
     def erase_old_snapshots(self, volume):
 
         def erase_snapshot(sn):
-            self._call_process(["btrfs", "subvolume", "delete", sn])
+            self._call_process(["btrfs", "subvolume", "delete", volume+'/'+sn])
 
         now = datetime.datetime.now()
         minute = now.time().minute
@@ -75,20 +75,22 @@ class Snapshotter:
                 erase_snapshot(snapshot)
 
     def _call_process(self, cli):
-        stdout = StringIO()
-        stderr = StringIO()
-        returncode = subprocess.call(cli, stderr=stderr, stdout=stdout, universal_newlines=True)
+        with subprocess.Popen(cli, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
+                              universal_newlines=True) as p:
+            err = p.stderr.read().strip()
+            out = p.stdout.read().strip()
+            if (err != ''):
+                self._error(err)
+            if (out != ''):
+                self._verbose(out)
 
-        self._verbose(stdout.getvalue())
-        if returncode != 0:
-            self._error(stderr.getvalue())
 
     def _error(self, s):
         print("EROOR:", s)
 
     def _verbose(self, s):
         if self.should_verbose:
-            print(s)
+            print("VERBOSE:", s, ".")
 
 
 def main():
