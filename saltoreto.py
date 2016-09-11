@@ -5,7 +5,7 @@ import sys
 import datetime
 import argparse
 import subprocess
-
+from io import StringIO
 
 class Snapshotter:
 
@@ -75,10 +75,13 @@ class Snapshotter:
                 erase_snapshot(snapshot)
 
     def _call_process(self, cli):
-        process = subprocess.run(cli, stderr=subprocess.PIPE, stdout=subprocess.PIPE, universal_newlines=True)
-        self._verbose(process.stdout)
-        if process.returncode != 0:
-            self._error(process.stderr)
+        stdout = StringIO()
+        stderr = StringIO()
+        returncode = subprocess.call(cli, stderr=stderr, stdout=stdout, universal_newlines=True)
+
+        self._verbose(stdout.getvalue())
+        if returncode != 0:
+            self._error(stderr.getvalue())
 
     def _error(self, s):
         print("EROOR:", s)
