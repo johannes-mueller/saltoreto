@@ -51,7 +51,7 @@ class Snapshotter:
                 continue
             sn_timestring = snapshot[snapshot.find('-')+1:]
             try:
-                sn_datetime = datetime.datetime.strptime(sn_timestring, "%Y-%m-%dT%H:%M")
+                sn_datetime = datetime.datetime.strptime(sn_timestring, self.dateformat)
             except ValueError as e:
                 self._error("Snapshot "+snapshot+" not treated. " + str(e))
                 continue
