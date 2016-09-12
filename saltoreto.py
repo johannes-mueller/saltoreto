@@ -25,7 +25,7 @@ class Snapshotter:
 
     def create_snapshot(self, volume):
         nowstring = datetime.datetime.now().strftime(self.dateformat)
-        snapshot = volume+'/snapshot-'+nowstring
+        snapshot = volume+'/'+self.slug_prefix+nowstring
 
         if (os.path.exists(snapshot)):
             self._error("Cannot create %s. Something is in the way." % (snapshot))
@@ -48,7 +48,7 @@ class Snapshotter:
         lst = os.listdir(volume)
 
         for snapshot in lst:
-            if not snapshot.startswith('snapshot-'):
+            if not snapshot.startswith(self.slug_prefix):
                 continue
             sn_timestring = snapshot[snapshot.find('-')+1:]
             try:
