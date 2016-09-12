@@ -40,7 +40,6 @@ class Snapshotter:
             self._call_process(["btrfs", "subvolume", "delete", volume+'/'+sn])
 
         now = datetime.datetime.now()
-        now = datetime.datetime.strptime("2016-09-12T03:30", "%Y-%m-%dT%H:%M")
         minute = now.time().minute
         hour= now.time().hour
         date = now.date()
