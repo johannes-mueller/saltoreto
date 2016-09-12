@@ -90,7 +90,7 @@ def main():
     )
     parser.add_argument('volumes', help="volumes to snapshot", nargs='+')
     parser.add_argument(
-        '-s', '--daily-save',
+        '-r', '--retain-hour',
         help="Which hourly snapshot should daily remain (default 2)",
         type=int, default=2, dest='retain_hour')
     parser.add_argument(
