@@ -40,6 +40,7 @@ class Snapshotter:
             self._call_process(["btrfs", "subvolume", "delete", volume+'/'+sn])
 
         now = datetime.datetime.now()
+        now = datetime.datetime.strptime("2016-09-12T03:30", "%Y-%m-%dT%H:%M")
         minute = now.time().minute
         hour= now.time().hour
         date = now.date()
@@ -56,23 +57,14 @@ class Snapshotter:
                 self._error("Snapshot "+snapshot+" not treated. " + str(e))
                 continue
 
-            sn_minute = sn_datetime.time().minute
-            sn_hour = sn_datetime.time().hour
-            sn_date = sn_datetime.date()
+            age = now-sn_datetime
 
-            if date > sn_date and (sn_hour != self.retain_hour):
+            if (age > datetime.timedelta(hours=1) and sn_datetime.time().minute != 0):
                 erase_snapshot(snapshot)
 
-
-            if sn_minute == 0:
-                continue
-
-            if hour - sn_hour > 1:
+            if (age > datetime.timedelta(hours=24) and sn_datetime.time().hour != self.retain_hour):
                 erase_snapshot(snapshot)
-                continue
 
-            if hour > sn_hour and minute > sn_minute:
-                erase_snapshot(snapshot)
 
     def _call_process(self, cli):
         with subprocess.Popen(cli, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
