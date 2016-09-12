@@ -100,8 +100,8 @@ def main():
         default="%Y-%m-%dT%H:%M", dest='dateformat')
     parser.add_argument(
         '-p', '--prefix',
-        help='Prefix por the volume slug (default "snapshot-")',
-        default="snapshot-", dest='slug_prefix')
+        help='Prefix por the volume slug (default ".snapshot-")',
+        default=".snapshot-", dest='slug_prefix')
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose')
 
     args = parser.parse_args()
