@@ -95,7 +95,7 @@ def main():
         type=int, default=2, dest='retain_hour')
     parser.add_argument(
         '-f', '--date-format',
-        help='Date format used for the volume slug (default "%Y-%m-%dT%H:%M")',
+        help='Date format used for the volume slug (default "%%Y-%%m-%%dT%%H:%%M")',
         default="%Y-%m-%dT%H:%M", dest='dateformat')
     parser.add_argument(
         '-p', '--prefix',
