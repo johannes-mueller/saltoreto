@@ -14,6 +14,7 @@ class Snapshotter:
         self.retain_hour = args.retain_hour
         self.dateformat = args.dateformat
         self.slug_prefix = args.slug_prefix
+        self.exclude = args.exclude
         self.should_verbose = args.verbose
 
     def go(self):
@@ -31,7 +32,12 @@ class Snapshotter:
             self._error("Cannot create %s. Something is in the way." % (snapshot))
             return
 
-        self._call_process(["btrfs", "subvolume", "snapshot", "-r", volume, snapshot])
+        self._call_process(["btrfs", "subvolume", "snapshot", volume, snapshot])
+        for root, dirs, files in os.walk(snapshot):
+            for exname in files+dirs:
+                if (exname==self.exclude):
+                    self._call_process(["rm", "-rf", os.path.join(root, exname)])
+        self._call_process(["btrfs", "property", "set", "-ts", snapshot, "ro", "true"])
 
 
     def erase_old_snapshots(self, volume):
@@ -99,8 +105,12 @@ def main():
         default="%Y-%m-%dT%H:%M", dest='dateformat')
     parser.add_argument(
         '-p', '--prefix',
-        help='Prefix por the volume slug (default ".snapshot-")',
+        help='Prefix for the volume slug (default ".snapshot-")',
         default=".snapshot-", dest='slug_prefix')
+    parser.add_argument(
+        '-e', '--exclude',
+        help='Name for files or directories to exclude i.e. actively delete from the snapshots (default "tmp")',
+        default="tmp", dest='exclude')
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose')
 
     args = parser.parse_args()
