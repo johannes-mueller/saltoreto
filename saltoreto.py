@@ -32,11 +32,17 @@ class Snapshotter:
             self._error("Cannot create %s. Something is in the way." % (snapshot))
             return
 
-        self._call_process(["btrfs", "subvolume", "snapshot", volume, snapshot])
+        self._call_process(["btrfs", "subvolume", "snapshot", "-r", volume, snapshot])
+        dellist = []
         for root, dirs, files in os.walk(snapshot):
+            if root in dellist:
+                continue
             for exname in files+dirs:
                 if (exname==self.exclude):
-                    self._call_process(["rm", "-rf", os.path.join(root, exname)])
+                    dellist.append(os.path.join(root, exname))
+        self._call_process(["btrfs", "property", "set", "-ts", snapshot, "ro", "false"])
+        for d in dellist:
+            self._call_process(["rm", "-rf", d])
         self._call_process(["btrfs", "property", "set", "-ts", snapshot, "ro", "true"])
 
 
