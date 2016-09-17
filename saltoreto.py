@@ -41,6 +41,7 @@ class Snapshotter:
                 if (exname==self.exclude):
                     dellist.append(os.path.join(root, exname))
         self._call_process(["btrfs", "property", "set", "-ts", snapshot, "ro", "false"])
+        self._call_process(["chmod", "700", snapshot])
         for d in dellist:
             self._call_process(["rm", "-rf", d])
         self._call_process(["btrfs", "property", "set", "-ts", snapshot, "ro", "true"])
