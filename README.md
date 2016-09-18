@@ -92,7 +92,7 @@ Usually you would setup a cron job to invoke `saltoreto.py`. Therefor put
 something like
 
 ```
-*/5 *   * * * root /usr/local/sbinsaltoreto.py /home /data 2>> /var/log/saltoreto-err.log
+*/5 *   * * * root /usr/local/sbin/saltoreto.py /home /data 2>> /var/log/saltoreto-err.log
 ```
 
 This creates a new snapshots of `/home` and `/data` every five minutes and
