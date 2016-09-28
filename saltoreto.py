@@ -90,10 +90,12 @@ class Snapshotter:
 
 
     def _error(self, s):
+        print(datetime.datetime.now().strftime("%Y-%m-%d"))
         print("EROOR:", s)
 
     def _verbose(self, s):
         if self.should_verbose:
+            print(datetime.datetime.now().strftime("%Y-%m-%d"))
             print("VERBOSE:", s, ".")
 
 
